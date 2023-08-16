@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Customer;
+use App\Models\Seller;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
@@ -38,12 +39,13 @@ class CustomerResource extends Resource
             ->label('Email')
             ->required(),
 
-            FileUpload::make('image')
+            FileUpload::make('image_path')
             ->label('Imagem')
+            ->image()
             ->required(),
 
         TextInput::make('telefone')
-            ->label('Telefones')
+            ->label('Telefone')
             ->required(),
 
         Select::make('tipo_cliente')
@@ -69,8 +71,13 @@ class CustomerResource extends Resource
                 TextColumn::make('email'),
                 TextColumn::make('telefone'),
                 TextColumn::make('tipo_cliente'),
-                TextColumn::make('vendedores'),
-                ImageColumn::make('imagem'),
+                TextColumn::make('formatted_vendedores')
+                ->label('Vendedores'),
+                ImageColumn::make('image_path')
+                    ->label('Imagem')
+                    ->circular()
+                    ->height(80)
+
             ])
             ->filters([
                 //
@@ -97,5 +104,16 @@ class CustomerResource extends Resource
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
+    }
+
+    public function destroy(Customer $customer)
+    {
+
+        $customer->sellers()->detach();
+
+
+        $customer->delete();
+
+        return redirect()->route('filament.resource.table', 'customers')->with('success', 'Cliente excluído com sucesso.');
     }
 }

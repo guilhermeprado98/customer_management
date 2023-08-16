@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('telefone');
             $table->string('tipo_cliente');
-            $table->string('vendedores');
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

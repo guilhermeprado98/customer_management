@@ -13,4 +13,5 @@ class Seller extends Model
         'name',
         'email',
     ];
+
 }
